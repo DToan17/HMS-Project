@@ -95,7 +95,7 @@ export default function Dashboard() {
     {
       title: 'Room Availability', to: '/rooms',
       value: loading ? '—' : `${stats?.roomAvailability?.available ?? 0}/${stats?.roomAvailability?.total ?? 0}`,
-      change: `${stats ? Math.round((1 - stats.roomAvailability.available / stats.roomAvailability.total) * 100) : 73}% occupied`,
+      change: `${stats?.roomAvailability ? Math.round((1 - stats.roomAvailability.available / stats.roomAvailability.total) * 100) : 73}% occupied`,
       trend: 'neutral',
       icon: Building2, iconBg: 'bg-purple-50', iconColor: 'text-purple-500',
     },
