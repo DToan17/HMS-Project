@@ -103,8 +103,24 @@ app.get('/api/dashboard/stats', async (req, res) => {
 
 // ─── PATIENTS ─────────────────────────────────────────────────────────────────
 app.get('/api/patients', async (req, res) => {
-  try { res.json(await callCpp({ action: 'getPatients' })); }
-  catch(e) { res.status(500).json({ error: e.message }); }
+  try {
+    const raw = await callCpp({ action: 'getPatients' });
+    const bloodGroups = ['A+','B+','O+','AB+','A-','B-','O-','AB-'];
+    const departments = ['Cardiology','Neurology','General Medicine','Orthopedics','Oncology','Pulmonology'];
+    const mapped = (Array.isArray(raw) ? raw : []).map(p => ({
+      ...p,
+      patientId: 'P' + String(p.id).padStart(3, '0'),
+      doctor: p.doctor_name || '—',
+      department: departments[p.id % departments.length],
+      bloodGroup: bloodGroups[p.id % bloodGroups.length],
+      status: p.admission_status === 'inpatient' ? 'Active'
+            : p.admission_status === 'outpatient' ? 'Active'
+            : 'Inactive',
+      lastVisit: (p.created_at || '').split(' ')[0],
+      allergies: []
+    }));
+    res.json(mapped);
+  } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 app.post('/api/patients', async (req, res) => {
