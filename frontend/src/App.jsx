@@ -27,24 +27,26 @@ export default function App() {
     setIsAuthenticated(false);
   };
 
-  if (!isAuthenticated) {
-    return <Login onLogin={handleLogin} />;
-  }
-
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout onLogout={handleLogout} />}>
-          <Route index element={<Navigate to="/dashboard" replace />} />
-          <Route path="dashboard"    element={<Dashboard />} />
-          <Route path="patients"     element={<Patients />} />
-          <Route path="appointments" element={<Appointments />} />
-          <Route path="doctors"      element={<Doctors />} />
-          <Route path="rooms"        element={<Rooms />} />
-          <Route path="revenue"      element={<Revenue />} />
-          <Route path="settings"     element={<Settings />} />
-          <Route path="*"            element={<Navigate to="/dashboard" replace />} />
-        </Route>
+        {!isAuthenticated ? (
+          <>
+            <Route path="*" element={<Login onLogin={handleLogin} />} />
+          </>
+        ) : (
+          <Route path="/" element={<Layout onLogout={handleLogout} />}>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard"    element={<Dashboard />} />
+            <Route path="patients"     element={<Patients />} />
+            <Route path="appointments" element={<Appointments />} />
+            <Route path="doctors"      element={<Doctors />} />
+            <Route path="rooms"        element={<Rooms />} />
+            <Route path="revenue"      element={<Revenue />} />
+            <Route path="settings"     element={<Settings />} />
+            <Route path="*"            element={<Navigate to="/dashboard" replace />} />
+          </Route>
+        )}
       </Routes>
     </BrowserRouter>
   );
